@@ -1,0 +1,1 @@
+classification_map_germany_2020_v02.tif filter=lfs diff=lfs merge=lfs -text
