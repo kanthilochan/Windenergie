@@ -1,0 +1,99 @@
+import psycopg2
+import arcpy
+import os
+
+# Verbindung zur PostgreSQL-Datenbank herstellen
+connection = psycopg2.connect(
+    host="localhost",
+    database="windenergie",
+    user="postgres",
+    password="kanthi789",
+    port="5432"
+)
+
+# Cursor erstellen
+cursor = connection.cursor()
+
+# Ordner für die exportierten Dateien erstellen
+output_folder = r"C:\Users\User\Desktop\smart_energy_project\abgerufene_daten"
+os.makedirs(output_folder, exist_ok=True)
+
+# Alle Tabellennamen im Schema "public" abrufen
+cursor.execute("""
+    SELECT table_name 
+    FROM information_schema.tables
+    WHERE table_schema = 'public';
+""")
+tables = cursor.fetchall()
+
+# Iterieren Sie über jede Tabelle
+for table_name in tables:
+    table_name = table_name[0]  # Tabellenname extrahieren
+    print(f"Verarbeite Tabelle: {table_name}")
+
+    # Überprüfen Sie, ob die Tabelle Rasterdaten enthält
+    cursor.execute(f"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '{table_name}';")
+    columns = cursor.fetchall()
+
+    column_types = {col[0]: col[1] for col in columns}
+    print(f"Spalten der Tabelle {table_name}: {column_types}")
+
+    # Rasterdaten: Enthält eine Spalte vom Typ `raster`
+    if 'rast' in column_types.values() or 'raster' in column_types.keys():
+        print(f"Exportiere Raster aus Tabelle {table_name}")
+
+        # Speichern Sie das Raster lokal
+        raster_output = os.path.join(output_folder, f"{table_name}.tif")
+        cursor.execute(f"""
+            SELECT ST_AsGDALRaster(rast, 'GTiff') AS rast_data
+            FROM public.{table_name}
+            LIMIT 1;
+        """)
+        row = cursor.fetchone()
+
+        if row and row[0]:
+            with open(raster_output, "wb") as file:
+                file.write(row[0])
+            print(f"Raster erfolgreich gespeichert: {raster_output}")
+
+    # Vektor-Daten: Enthält eine Spalte vom Typ `geometry`
+    elif 'geometry' in column_types.values():
+        print(f"Exportiere Vektor-Daten aus Tabelle {table_name}")
+
+        # Speichern Sie die Vektor-Daten lokal
+        vector_output = os.path.join(output_folder, f"{table_name}.shp")
+        arcpy.FeatureClassToFeatureClass_conversion(
+            in_features=f"public.{table_name}",
+            out_path=output_folder,
+            out_name=f"{table_name}.shp"
+        )
+        print(f"Vektor-Daten erfolgreich gespeichert: {vector_output}")
+
+    # Tabellendaten (z. B. CSV): Enthält keine `geometry`- oder `raster`-Spalte
+    else:
+        print(f"Exportiere Tabellendaten aus Tabelle {table_name}")
+
+        # Abrufen der Tabellendaten
+        cursor.execute(f"SELECT * FROM public.{table_name};")
+        rows = cursor.fetchall()
+
+        # Spaltennamen abrufen
+        column_names = [desc[0] for desc in cursor.description]
+
+        # Datei speichern
+        csv_output = os.path.join(output_folder, f"{table_name}.csv")
+        with open(csv_output, "w", encoding="utf-8") as file:
+            # Spaltennamen schreiben
+            file.write(",".join(column_names) + "\n")
+
+            # Tabellendaten schreiben
+            for row in rows:
+                file.write(",".join(map(str, row)) + "\n")
+
+        print(f"CSV-Datei erfolgreich gespeichert: {csv_output}")
+
+# Verbindung schließen
+cursor.close()
+connection.close()
+
+print("Alle Dateien wurden erfolgreich exportiert!")
