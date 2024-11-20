@@ -1,0 +1,72 @@
+import psycopg2
+import requests
+import os
+
+# *** Gemeinsamer lokaler Speicherordner ***
+output_folder = r"C:\Users\User\Desktop\smart_energy_project\abgerufene_daten"
+os.makedirs(output_folder, exist_ok=True)
+
+# Verbindung zur PostgreSQL-Datenbank herstellen
+pg_connection = psycopg2.connect(
+    host="localhost",
+    database="windenergie",
+    user="postgres",
+    password="kanthi789"
+)
+pg_cursor = pg_connection.cursor()
+
+# Abrufen aller Tabellennamen aus dem Schema 'public'
+pg_cursor.execute(f"""
+    SELECT table_name 
+    FROM information_schema.tables
+    WHERE table_schema = '{"public"}';
+""")
+pg_tables = pg_cursor.fetchall()
+
+# CSV-Daten aus pgAdmin abrufen
+for table in pg_tables:
+    table_name = table[0]
+    print(f"Abrufen von Daten aus Tabelle: {table_name}")
+    output_csv_path = os.path.join(output_folder, f"{table_name}.csv")
+    pg_cursor.execute(f"SELECT * FROM public.{table_name};")
+    rows = pg_cursor.fetchall()
+    column_names = [desc[0] for desc in pg_cursor.description]
+    with open(output_csv_path, "w", encoding="utf-8") as file:
+        file.write(",".join(column_names) + "\n")
+        for row in rows:
+            file.write(",".join(map(str, row)) + "\n")
+    print(f"CSV erfolgreich gespeichert: {output_csv_path}")
+
+print("Alle CSV-Daten aus pgAdmin erfolgreich heruntergeladen.")
+
+# Verbindung schließen
+pg_cursor.close()
+pg_connection.close()
+
+# GitHub API-Endpoint
+api_url = f"https://api.github.com/repos/kanthilochan/Windenergie/contents/Daten?ref=main"
+
+# GitHub-Header für die Authentifizierung
+headers = {
+    "Authorization": "token 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"
+}
+
+response = requests.get(api_url, headers=headers)
+
+if response.status_code == 200:
+    files = response.json()
+    for file in files:
+        if file['type'] == 'file':
+            file_name = file['name']
+            download_url = file['download_url']
+            file_response = requests.get(download_url, headers=headers)
+            if file_response.status_code == 200:
+                with open(os.path.join(output_folder, file_name), "wb") as f:
+                    f.write(file_response.content)
+                print(f"Datei von GitHub erfolgreich heruntergeladen: {file_name}")
+            else:
+                print(f"Fehler beim Herunterladen von: {file_name}")
+else:
+    print(f"Fehler beim Abrufen von Dateien aus GitHub: {response.status_code}")
+
+print("Alle Dateien aus GitHub erfolgreich heruntergeladen.")
