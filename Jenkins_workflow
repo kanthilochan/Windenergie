@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Repository klonen') {
+            steps {
+                // Klont das Repository in das Jenkins-Arbeitsverzeichnis
+                git branch: 'main', url: 'https://github.com/kanthilochan/Windenergie.git'
+            }
+        }
+
+        stage('Workflow ausführen') {
+            steps {
+                // Führt das zentrale Python-Skript direkt aus dem Hauptverzeichnis des geklonten Repositorys aus
+                sh 'python zentraler_workflow.py'
+            }
+        }
+    }
+}
