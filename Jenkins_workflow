@@ -1,18 +1,27 @@
 pipeline {
     agent any
 
+    environment {
+        PG_CONNECTION = "C:\\Users\\User\\.jenkins\\ArcGIS\\PostgreSQL-localhost-windenergie(postgres).sde"
+        ARCGIS_PYTHON = "C:\\Users\\User\\AppData\\Local\\Programs\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3\\python.exe"  // Python-Umgebung von ArcGIS Pro
+    }
+
     stages {
         stage('Repository klonen') {
             steps {
-                // Klont das Repository in das Jenkins-Arbeitsverzeichnis
                 git branch: 'main', url: 'https://github.com/kanthilochan/Windenergie.git'
             }
         }
 
         stage('Workflow ausführen') {
             steps {
-                // Führt das zentrale Python-Skript direkt aus dem Hauptverzeichnis des geklonten Repositorys aus
                 sh 'python zentraler_workflow.py'
+            }
+        }
+
+        stage('Daten in ArcGIS laden') {
+            steps {
+                sh '"${ARCGIS_PYTHON}" pgadmin_zu_arcgis.py'
             }
         }
     }
