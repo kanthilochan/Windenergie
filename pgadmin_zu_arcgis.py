@@ -10,8 +10,14 @@ def lade_daten_aus_pg(tabellen, gdb):
     Lädt Tabellen aus PostgreSQL in eine Geodatabase.
     """
     for tabelle in tabellen:
-        in_table = f"{pg_connection}.{tabelle}"  # Datenbanktabelle
+        in_table = f"{pg_connection}\\{tabelle}"  # Datenbanktabelle
         out_table = os.path.join(gdb, tabelle)  # Ziel-GDB-Tabelle
+        
+        # Prüfen, ob die Ausgabe bereits existiert
+        if arcpy.Exists(out_table):
+            print(f"{out_table} existiert bereits. Es wird gelöscht...")
+            arcpy.management.Delete(out_table)
+        
         print(f"Lade {tabelle} in {out_table}...")
         arcpy.conversion.TableToTable(in_table, gdb, tabelle)
     print("Tabellen wurden erfolgreich in die Geodatabase geladen.")
