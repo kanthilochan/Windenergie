@@ -34,6 +34,10 @@ def main():
     
     # Projekt öffnen
     aprx = arcpy.mp.ArcGISProject(project_path)
+    
+    # **Debugging: Alle Karten im Projekt auflisten**
+    print(f"Karten im Projekt: {[m.name for m in aprx.listMaps()]}")
+
     map_view = aprx.listMaps()[0]  # Wählen Sie die erste Karte im Projekt
 
     # Hinzufügen der Tabellen als Layer in die Karte
@@ -41,6 +45,11 @@ def main():
         layer_path = os.path.join(output_gdb, tabelle)
         map_view.addDataFromPath(layer_path)
         print(f"Tabelle {tabelle} wurde als Layer in die Karte hinzugefügt.")
+
+        # Layer sichtbar machen
+        layer = map_view.listLayers(tabelle)[0]
+        layer.visible = True
+        print(f"Layer {tabelle} wurde sichtbar gemacht.")
 
     # Projekt speichern
     aprx.save()
