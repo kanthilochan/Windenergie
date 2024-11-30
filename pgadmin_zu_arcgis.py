@@ -10,7 +10,7 @@ def lade_daten_aus_pg(tabellen, gdb):
     Lädt Tabellen aus PostgreSQL in eine Geodatabase.
     """
     for tabelle in tabellen:
-        in_table = f"{pg_connection}\\{tabelle}"  # Datenbanktabelle
+        in_table = f"{pg_connection}.{tabelle}"  # Datenbanktabelle
         out_table = os.path.join(gdb, tabelle)  # Ziel-GDB-Tabelle
         
         # Prüfen, ob die Ausgabe bereits existiert
