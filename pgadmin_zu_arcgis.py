@@ -31,15 +31,13 @@ def main():
 
     # ArcGIS Pro-Projektpfad (aktuelle .aprx-Datei)
     project_path = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.aprx"
-
+    
     # Projekt öffnen
     aprx = arcpy.mp.ArcGISProject(project_path)
-
+    
     # **Debugging: Alle Karten im Projekt auflisten**
     print(f"Karten im Projekt: {[m.name for m in aprx.listMaps()]}")
-
-    # Erste Karte auswählen
-    map_view = aprx.listMaps()[0]
+    map_view = aprx.listMaps()[0]  # Wählen Sie die erste Karte im Projekt
     print(f"Ausgewählte Karte: {map_view.name}")
 
     # Hinzufügen der Tabellen als Layer in die Karte
@@ -56,7 +54,7 @@ def main():
 
         # Layer sichtbar machen
         try:
-            layer = next(layer for layer in map_view.listLayers() if tabelle in layer.name)
+            layer = next(layer for layer in map_view.listLayers() if tabelle in layer.name.lower())
             layer.visible = True
             print(f"Layer {layer.name} wurde sichtbar gemacht.")
         except StopIteration:
