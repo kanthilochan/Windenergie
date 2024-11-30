@@ -30,7 +30,7 @@ def main():
     lade_daten_aus_pg(tabellen, output_gdb)
 
     # ArcGIS Pro-Projektpfad (aktuelle .aprx-Datei)
-    project_path = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.aprx"
+    project_path = r"‪C:\Users\User\Desktop\smart_energy_project\MyProject\neues_projekt.aprx"
 
     # Projekt öffnen
     aprx = arcpy.mp.ArcGISProject(project_path)
