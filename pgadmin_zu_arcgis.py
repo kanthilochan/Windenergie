@@ -2,7 +2,7 @@ import arcpy
 import os
 
 # PostgreSQL-Verbindungsinformationen
-pg_connection = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\PostgreSQL-localhost-windenergie(postgres).sde\windenergie.public"  # Pfad zur .sde-Verbindungsdatei
+pg_connection = r"C:\Users\User\Desktop\smart_energy_project\MyProject\PostgreSQL-localhost-windenergie(postgres).sde\windenergie.public"  # Pfad zur .sde-Verbindungsdatei
 output_gdb = r"C:\Users\User\Desktop\smart_energy_project\MyProject\neues_projekt.gdb"  # Lokale Geodatabase in ArcGIS Pro
 
 def lade_daten_aus_pg(tabellen, gdb):
