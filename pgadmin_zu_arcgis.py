@@ -29,10 +29,22 @@ def main():
     # Daten in die Geodatabase laden
     lade_daten_aus_pg(tabellen, output_gdb)
 
-    # Hinzufügen der Tabellen als Layer in ArcGIS Pro
+    # ArcGIS Pro-Projektpfad (aktuelle .aprx-Datei)
+    project_path = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.aprx"
+
+    # Projekt öffnen
+    aprx = arcpy.mp.ArcGISProject(project_path)
+    map_view = aprx.listMaps()[0]  # Wählen Sie die erste Karte im Projekt
+
+    # Hinzufügen der Tabellen als Layer in die Karte
     for tabelle in tabellen:
-        arcpy.management.MakeTableView(os.path.join(output_gdb, tabelle), tabelle)
-        print(f"Tabelle {tabelle} wurde als Layer hinzugefügt.")
+        layer_path = os.path.join(output_gdb, tabelle)
+        map_view.addDataFromPath(layer_path)
+        print(f"Tabelle {tabelle} wurde als Layer in die Karte hinzugefügt.")
+
+    # Projekt speichern
+    aprx.save()
+    print("Projekt wurde aktualisiert und gespeichert.")
 
 if __name__ == "__main__":
     main()
