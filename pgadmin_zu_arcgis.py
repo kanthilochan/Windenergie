@@ -1,71 +1,49 @@
-import arcpy
 import os
+import requests
+import arcpy
 
 # PostgreSQL-Verbindungsinformationen
-pg_connection = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\PostgreSQL-localhost-windenergie(postgres).sde\windenergie.public"  # Pfad zur .sde-Verbindungsdatei
-output_gdb = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.gdb"  # Lokale Geodatabase in ArcGIS Pro
+pg_connection = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\PostgreSQL-localhost-windenergie(postgres).sde\windenergie.public"
+output_gdb = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.gdb"
+
+# Zielverzeichnisse für Dateien
+tif_folder = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\TIF_Files"
+gpx_folder = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\GPX_Files"
+
+# Personal Access Token (PAT) für GitHub
+GITHUB_TOKEN = "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"
 
 def lade_daten_aus_pg(tabellen, gdb):
-    """
-    Lädt Tabellen aus PostgreSQL in eine Geodatabase.
-    """
     for tabelle in tabellen:
-        in_table = f"{pg_connection}.{tabelle}"  # Datenbanktabelle
-        out_table = os.path.join(gdb, tabelle)  # Ziel-GDB-Tabelle
+        arcpy.conversion.TableToTable(f"{pg_connection}.{tabelle}", gdb, tabelle)
 
-        # Prüfen, ob die Ausgabe bereits existiert
-        if arcpy.Exists(out_table):
-            print(f"{out_table} existiert bereits. Es wird gelöscht...")
-            arcpy.management.Delete(out_table)
+def lade_dateien_von_github(repo_owner, repo_name, ordner, zielverzeichnisse, branch="main"):
+    url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{ordner}?ref={branch}"
+    headers = {'Authorization': f'token {GITHUB_TOKEN}'}
+    files = requests.get(url, headers=headers).json()
 
-        print(f"Lade {tabelle} in {out_table}...")
-        arcpy.conversion.TableToTable(in_table, gdb, tabelle)
-    print("Tabellen wurden erfolgreich in die Geodatabase geladen.")
+    for file in files:
+        if file['name'] == 'Windgeschwindigkeit_DE.tif':
+            zielpfad = os.path.join(zielverzeichnisse['tif'], file['name'])
+        elif file['name'] == 'umspannwerke.gpx':
+            zielpfad = os.path.join(zielverzeichnisse['gpx'], file['name'])
+        else:
+            continue
+
+        with open(zielpfad, 'wb') as f:
+            f.write(requests.get(file['download_url'], headers=headers).content)
 
 def main():
-    # Tabellen, die geladen werden sollen
-    tabellen = ['windparks_vva', 'zeitreihe_vva']
+    os.makedirs(tif_folder, exist_ok=True)
+    os.makedirs(gpx_folder, exist_ok=True)
 
-    # Daten in die Geodatabase laden
-    lade_daten_aus_pg(tabellen, output_gdb)
-
-    # ArcGIS Pro-Projektpfad (aktuelle .aprx-Datei)
-    project_path = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.aprx"
-    
-    # Projekt öffnen
-    aprx = arcpy.mp.ArcGISProject(project_path)
-    
-    # **Debugging: Alle Karten im Projekt auflisten**
-    print(f"Karten im Projekt: {[m.name for m in aprx.listMaps()]}")
-    map_view = aprx.listMaps()[0]  # Wählen Sie die erste Karte im Projekt
-    print(f"Ausgewählte Karte: {map_view.name}")
-
-    # Hinzufügen der Tabellen als Layer in die Karte
-    for tabelle in tabellen:
-        layer_path = os.path.join(output_gdb, tabelle)
-        print(f"Versuche, Tabelle {tabelle} als Layer hinzuzufügen. Pfad: {layer_path}")
-
-        # Layer hinzufügen
-        map_view.addDataFromPath(layer_path)
-        print(f"Tabelle {tabelle} wurde als Layer in die Karte hinzugefügt.")
-
-        # **Debugging: Layer nach Hinzufügen auflisten**
-        print(f"Layer in der Karte nach Hinzufügen: {[layer.name for layer in map_view.listLayers()]}")
-
-        # Layer sichtbar machen
-        try:
-            layer = next(layer for layer in map_view.listLayers() if tabelle in layer.name.lower())
-            layer.visible = True
-            print(f"Layer {layer.name} wurde sichtbar gemacht.")
-        except StopIteration:
-            print(f"Fehler: Layer für Tabelle {tabelle} wurde nicht gefunden.")
-
-    # Projekt speichern
-    try:
-        aprx.save()
-        print("Projekt wurde erfolgreich gespeichert.")
-    except Exception as e:
-        print(f"Fehler beim Speichern des Projekts: {e}")
+    lade_daten_aus_pg(['windparks_vva', 'zeitreihe_vva'], output_gdb)
+    lade_dateien_von_github(
+        repo_owner="kanthilochan",
+        repo_name="Windenergie",
+        ordner="Daten",
+        zielverzeichnisse={'tif': tif_folder, 'gpx': gpx_folder}
+    )
 
 if __name__ == "__main__":
     main()
