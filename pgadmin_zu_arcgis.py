@@ -14,14 +14,30 @@ gpx_folder = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\GPX_Files
 GITHUB_TOKEN = "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"
 
 def lade_daten_aus_pg(tabellen, gdb):
+    """Lädt Tabellen aus PostgreSQL in eine Geodatabase."""
     for tabelle in tabellen:
+        out_table = os.path.join(gdb, tabelle)
+        # Prüfen, ob die Tabelle bereits existiert, und löschen, falls ja
+        if arcpy.Exists(out_table):
+            arcpy.management.Delete(out_table)
         arcpy.conversion.TableToTable(f"{pg_connection}.{tabelle}", gdb, tabelle)
+        print(f"{tabelle} wurde abgerufen und gespeichert.")
 
 def lade_dateien_von_github(repo_owner, repo_name, ordner, zielverzeichnisse, branch="main"):
+    """Lädt Dateien aus einem angegebenen GitHub-Ordner herunter."""
     url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{ordner}?ref={branch}"
-    headers = {'Authorization': f'token {GITHUB_TOKEN}'}
-    files = requests.get(url, headers=headers).json()
-
+    headers = {
+        'Authorization': f'token {GITHUB_TOKEN}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise Exception(f"Fehler beim Abrufen der GitHub-Dateien: {response.status_code}, {response.text}")
+    
+    files = response.json()
+    if not isinstance(files, list):
+        raise Exception("Unerwartete Antwortstruktur von GitHub. Überprüfen Sie den Ordnerpfad.")
+    
     for file in files:
         if file['name'] == 'Windgeschwindigkeit_DE.tif':
             zielpfad = os.path.join(zielverzeichnisse['tif'], file['name'])
@@ -32,6 +48,7 @@ def lade_dateien_von_github(repo_owner, repo_name, ordner, zielverzeichnisse, br
 
         with open(zielpfad, 'wb') as f:
             f.write(requests.get(file['download_url'], headers=headers).content)
+        print(f"{file['name']} wurde heruntergeladen.")
 
 def main():
     os.makedirs(tif_folder, exist_ok=True)
