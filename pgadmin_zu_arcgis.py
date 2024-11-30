@@ -2,8 +2,8 @@ import arcpy
 import os
 
 # PostgreSQL-Verbindungsinformationen
-pg_connection = r"C:\Users\User\Desktop\smart_energy_project\MyProject\PostgreSQL-localhost-windenergie(postgres).sde\windenergie.public"  # Pfad zur .sde-Verbindungsdatei
-output_gdb = r"C:\Users\User\Desktop\smart_energy_project\MyProject\neues_projekt.gdb"  # Lokale Geodatabase in ArcGIS Pro
+pg_connection = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\PostgreSQL-localhost-windenergie(postgres).sde\windenergie.public"  # Pfad zur .sde-Verbindungsdatei
+output_gdb = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.gdb"  # Lokale Geodatabase in ArcGIS Pro
 
 def lade_daten_aus_pg(tabellen, gdb):
     """
@@ -30,7 +30,7 @@ def main():
     lade_daten_aus_pg(tabellen, output_gdb)
 
     # ArcGIS Pro-Projektpfad (aktuelle .aprx-Datei)
-    project_path = r"C:\Users\User\Desktop\smart_energy_project\MyProject\neues_projekt.aprx"
+    project_path = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.aprx"
     
     # Projekt öffnen
     aprx = arcpy.mp.ArcGISProject(project_path)
