@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standorteignungsprüfer für Windenergie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e8f5e9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #2e7d32;
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #388e3c;
+        }
+        .results {
+            background: #ffffff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .results p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Standorteignungsprüfer für Windenergie</h1>
+    <form method="POST">
+        <label for="latitude">Breitengrad:</label>
+        <input type="text" id="latitude" name="latitude" required>
+        
+        <label for="longitude">Längengrad:</label>
+        <input type="text" id="longitude" name="longitude" required>
+        
+        <button type="submit">Eignung prüfen</button>
+    </form>
+    
+    {% if suitability_label %}
+        <div class="results">
+            <h2>Ergebnisse:</h2>
+            <p><strong>Eignungskennzeichnung:</strong> {{ suitability_label }}</p>
+            <p><strong>Windgeschwindigkeit:</strong> {{ wind_speed|round(4) }} m/s</p>
+            <p><strong>Bodenbedeckung:</strong> {{ land_cover_name }}</p>
+            <p><strong>Entfernung zur nächsten Umspannstation:</strong> {{ nearest_distance|round(4) }} km</p>
+        </div>
+    {% endif %}
+</body>
+</html>
