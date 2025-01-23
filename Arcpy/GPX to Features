@@ -1,5 +1,0 @@
-arcpy.conversion.GPXtoFeatures(
-    Input_GPX_File=r"C:\Users\User\Desktop\smart_energy_project\umspannwerke.gpx",
-    Output_Feature_class=r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.gdb\umspannwerke_GPXtoFeatures",
-    Output_Type="POINTS"
-)
