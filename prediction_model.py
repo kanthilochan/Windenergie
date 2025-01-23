@@ -11,197 +11,132 @@ from pyproj import Transformer
 import matplotlib.pyplot as plt
 from flask import Flask, request, render_template
 
-# Load the dataset
+# Datensatz laden
 data = pd.read_csv(r"C:\Users\User\Desktop\smart_energy_project\data\Windparks_final\windparks.csv")
 
-# Drop rows with null values
+# Entfernen von Zeilen mit fehlenden Werten
 data = data.dropna()
 
-# Remove rows where Landbedeckung is 'Unknown'
+# Filtern der Daten, um unbekannte Landbedeckung auszuschließen
 data = data[data['Landbedeck'] != 'Unknown']
 
-# Remove duplicate rows based on lat, lon, and feature columns
+# Entfernen von Duplikaten anhand von Koordinaten- und Merkmalsdaten
 data = data.drop_duplicates(subset=['lon', 'lat', 'NEAR_DIST', 'Windgeschwindigkeit', 'Landbedeck'])
 
-# Label all existing samples as "Suitable"
+# Alle vorhandenen Datensätze als "Geeignet" markieren
 data['suitability'] = 'Geeignet'
 
-# Define the bounding box for generating new negative samples
+# Definieren eines Begrenzungsrahmens für das Erzeugen neuer negativer Stichproben
 lon_min, lon_max = data['lon'].min() - 0.1, data['lon'].max() + 0.1
 lat_min, lat_max = data['lat'].min() - 0.1, data['lat'].max() + 0.1
 
-# Generate new negative samples (equal in number to positive samples)
+# Generierung neuer negativer Stichproben mit zufälligen Koordinaten innerhalb des definierten Bereichs
 num_new_negative_samples = len(data)
 random_lons = np.random.uniform(lon_min, lon_max, num_new_negative_samples)
 random_lats = np.random.uniform(lat_min, lat_max, num_new_negative_samples)
 
-# Create a GeoDataFrame for new negative samples
+# Erstellen eines GeoDataFrame für die negativen Stichproben
 new_negative_samples = pd.DataFrame({'lon': random_lons, 'lat': random_lats})
 new_negative_samples['geometry'] = new_negative_samples.apply(lambda row: Point(row['lon'], row['lat']), axis=1)
 new_negative_samples = gpd.GeoDataFrame(new_negative_samples, geometry='geometry')
 
-
-# Generate more values towards 8 and fewer towards 0 for Windgeschwindigkeit
+# Generierung von Windgeschwindigkeitswerten mit mehr Werten in einem bestimmten Bereich
 new_negative_samples['Windgeschwindigkeit'] = np.random.uniform(3.7, 6.5, size=len(new_negative_samples))
 
-# Generate more values towards 10 and fewer towards 30 for NEAR_DIST
+# Generierung von Entfernungswerten mit einer Gewichtung auf niedrigere Werte
 new_negative_samples['NEAR_DIST'] = np.random.uniform(10, 40, size=len(new_negative_samples))
-new_negative_samples['Landbedeck'] = np.random.choice(['Agriculture', 'Built-Up', 'Bare Soil', 'Forest', 'Low Vegetation', 'Water'], 
-                                                      size=len(new_negative_samples), p=[0.03, 0.6, 0.03, 0.3, 0.03, 0.01])
+
+# Zufällige Zuweisung von Landbedeckungstypen unter Berücksichtigung der Wahrscheinlichkeiten
+new_negative_samples['Landbedeck'] = np.random.choice(
+    ['Agriculture', 'Built-Up', 'Bare Soil', 'Forest', 'Low Vegetation', 'Water'], 
+    size=len(new_negative_samples), p=[0.03, 0.6, 0.03, 0.3, 0.03, 0.01]
+)
 new_negative_samples['suitability'] = 'Nicht geeignet'
 
-# Combine and shuffle all samples
+# Zusammenführen der positiven und negativen Stichproben und zufälliges Mischen
 combined_data = pd.concat([data, new_negative_samples], ignore_index=True)
 combined_data = combined_data.sample(frac=1, random_state=42).reset_index(drop=True)
 
-# Encode suitability and land cover (Landbedeck) separately
+# Kodierung von Eignung und Landbedeckung in numerische Werte
 suitability_encoder = LabelEncoder()
 landbedeck_encoder = LabelEncoder()
 
 combined_data['suitability_encoded'] = suitability_encoder.fit_transform(combined_data['suitability'])
 combined_data['Landbedeck_encoded'] = landbedeck_encoder.fit_transform(combined_data['Landbedeck'])
 
-# Define features and target
+# Definition der Merkmale und Zielvariable für das Modell
 features = ['NEAR_DIST', 'Windgeschwindigkeit', 'Landbedeck_encoded']
-X = combined_data[features].copy()  # Create a safe copy
+X = combined_data[features].copy()  # Erstellen einer sicheren Kopie der Daten
 y = combined_data['suitability_encoded']
 
-# Standardize features
+# Normalisierung der Merkmale
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Train-test split
+# Aufteilung der Daten in Trainings- und Testdaten
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42, stratify=y)
 
-# Train the model with adjusted parameters
-model = RandomForestClassifier(random_state=42, max_features='sqrt', n_estimators=200)  # Balanced feature consideration
+# Training des Random-Forest-Klassifikators mit optimierten Parametern
+model = RandomForestClassifier(random_state=42, max_features='sqrt', n_estimators=200)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
-# Evaluate the model
+# Modellbewertung durch Genauigkeit, Berichts- und Verwirrungsmatrix
 accuracy = accuracy_score(y_test, y_pred)
 report = classification_report(y_test, y_pred, target_names=suitability_encoder.classes_)
 
-print("Accuracy:", accuracy)
-print("\nClassification Report:\n", report)
+print("Genauigkeit:", accuracy)
+print("\nKlassifikationsbericht:\n", report)
 
-# Confusion matrix
-cm = confusion_matrix(y_test, y_pred)
-print("\nConfusion Matrix:\n", cm)
-
-# Feature importance
+# Ausgabe der Feature-Importance-Werte
 importances = model.feature_importances_
 for feature, importance in zip(features, importances):
-    print(f"Feature: {feature}, Importance: {importance:.4f}")
+    print(f"Feature: {feature}, Wichtigkeit: {importance:.4f}")
 
-# Flask-App initialisieren
+# Flask-App zur Bereitstellung der Vorhersagefunktionalität
 app = Flask(__name__)
 
-# Load TIF files
+# Laden von TIF-Dateien für Windgeschwindigkeit und Landbedeckung
 wind_speed_tif = rasterio.open(r"C:\Users\User\Desktop\smart_energy_project\Windgeschwindigkeit_DE.tif")
 land_cover_tif = rasterio.open(r"C:\Users\User\Desktop\smart_energy_project\landbedeckung.tif")
 
-# Load substations
+# Laden der Umspannwerksdaten
 substations = gpd.read_file(r"C:\Users\User\Desktop\smart_energy_project\umspannwerke.gpx", layer='waypoints')
 
-# Create a transformer from WGS84 (lat/lon) to the raster's CRS
+# Koordinatentransformation von WGS84 in das Raster-Koordinatensystem
 transformer = Transformer.from_crs("epsg:4326", land_cover_tif.crs, always_xy=True)
 
-# Functions to extract raster values
+# Funktion zum Abrufen von Windgeschwindigkeitswerten
 def get_raster_value_wind(tif, lat, lon):
     coords = [(lon, lat)]
     values = [x[0] for x in tif.sample(coords)]
     return values[0]
 
+# Funktion zum Abrufen von Landbedeckungswerten
 def get_raster_value_landcover(tif, lat, lon):
     coords = [(transformer.transform(lon, lat))]
     values = [x[0] for x in tif.sample(coords)]
     return values[0]
 
-# Function to calculate nearest substation distance
+# Berechnung der Entfernung zur nächstgelegenen Umspannstation
 def get_nearest_distance(lat, lon):
-    # Convert user location to GeoDataFrame
     user_location = gpd.GeoDataFrame({'geometry': [Point(lon, lat)]}, crs="epsg:4326")
-    
-    # Reproject both user location and substations to UTM (e.g., EPSG:32633)
     user_location = user_location.to_crs(epsg=32633)
     substations_projected = substations.to_crs(epsg=32633)
-    
-    # Calculate distance to each substation and return the minimum
     distances = substations_projected.geometry.distance(user_location.loc[0, 'geometry'])
-    return distances.min() / 1000  # Convert meters to kilometers
+    return distances.min() / 1000  # Umwandlung in Kilometer
 
-# Define land cover mapping
-land_cover_mapping = {
-    10: 'Forest',
-    20: 'Low Vegetation',
-    30: 'Water',
-    40: 'Built-Up',
-    50: 'Bare Soil',
-    60: 'Agriculture'
-}
-
-# Prediction function
-def predict_suitability(lat, lon):
-    wind_speed = get_raster_value_wind(wind_speed_tif, lat, lon)
-    land_cover_class = get_raster_value_landcover(land_cover_tif, lat, lon)
-    nearest_distance = get_nearest_distance(lat, lon)
-    land_cover_name = land_cover_mapping.get(land_cover_class, 'Unknown')
-
-    if wind_speed >= 8 and land_cover_name in ['Agriculture', 'Low Vegetation', 'Bare Soil'] and nearest_distance <= 5:
-        return "Sehr geeignet"
-    elif land_cover_name == 'Water':
-        return "Nicht geeignet"
-    elif land_cover_name == 'Built-Up' and (wind_speed <7.5 or nearest_distance >2):
-        return "Nicht geeignet"
-    elif land_cover_name == 'Unknown':
-        print(f"Unseen land cover class: {land_cover_class}. Defaulting to model prediction.")
-        return "Nicht geeignet"
-    else:
-        land_cover_encoded = landbedeck_encoder.transform([land_cover_name])[0]
-        input_data = pd.DataFrame([[nearest_distance, wind_speed, land_cover_encoded]], columns=['NEAR_DIST', 'Windgeschwindigkeit', 'Landbedeck_encoded'])
-        input_scaled = scaler.transform(input_data)
-        predicted_class = model.predict(input_scaled)
-        return suitability_encoder.inverse_transform(predicted_class)[0]
-    
-# Translation mapping for land cover classes and suitability labels
-translations = {
-    'Agriculture': 'Landwirtschaft',
-    'Built-Up': 'Bebaut',
-    'Bare Soil': 'Nackter Boden',
-    'Forest': 'Wald',
-    'Low Vegetation': 'Niedrige Vegetation',
-    'Water': 'Wasser',
-}
-
-# Flask-Route für Benutzereingaben und Ergebnisanzeige
+# Flask-Route für die Verarbeitung von Benutzereingaben und Anzeige der Ergebnisse
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    suitability_label = None
-    wind_speed = None
-    land_cover_name = None
-    nearest_distance = None
-
     if request.method == 'POST':
         lat = float(request.form['latitude'])
         lon = float(request.form['longitude'])
-
         suitability_label = predict_suitability(lat, lon)
-        wind_speed = round(get_raster_value_wind(wind_speed_tif, lat, lon), 4)
-        land_cover_class = get_raster_value_landcover(land_cover_tif, lat, lon)
-        land_cover_name = land_cover_mapping.get(land_cover_class, 'Unknown')
-        nearest_distance = round(get_nearest_distance(lat, lon), 4)
-        
-        # Translate the output values to German
-        land_cover_name = translations.get(land_cover_name, land_cover_name)
+        return render_template('index.html', suitability_label=suitability_label)
+    return render_template('index.html')
 
-    return render_template('index.html', 
-                           suitability_label=suitability_label, 
-                           wind_speed=wind_speed, 
-                           land_cover_name=land_cover_name, 
-                           nearest_distance=nearest_distance)
-
-# Run Flask app
+# Flask-App starten
 if __name__ == '__main__':
     try:
         app.run(debug=True, host='0.0.0.0', port=5000)
