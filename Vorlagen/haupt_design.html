@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windenergie-Plattform</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #e8f5e9); /* Soft gradient for a clean look */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background: #004d40; /* Dark teal for a modern eco feel */
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.8em;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            margin-top: 5px;
+            color: #c8e6c9;
+        }
+
+        .content {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .content h2 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            background: #00796b; /* Modern teal button */
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .buttons a:hover {
+            background: #004d40; /* Darker teal on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Willkommen auf der Windenergie-Plattform</h1>
+        <p>Eine Lösung für die Visualisierung und Standortbewertung von Windkraftanlagen</p>
+    </header>
+
+    <div class="content">
+        <h2>Wählen Sie eine der folgenden Optionen:</h2>
+        <div class="buttons">
+            <a href="https://experience.arcgis.com/experience/e4a30883f4ff47009987f0a88506bf81/" target="_blank">
+                Windkraftanlagen und Umspannwerke in Deutschland anzeigen
+            </a>
+            <p class="note">Bitte nutzen Sie das Layers-Symbol, um zwischen verschiedenen Ebenen zu wechseln. Wenn Sie auf einen Windkraftstandort klicken, werden Details zu diesem Standort in einem Popup angezeigt.</p>
+            
+            <a href="http://18.199.174.181:5000" target="_blank">
+                Standort-Eignung für die Installation von Windkraftanlagen prüfen
+            </a>
+            <p class="note">Bitte geben Sie den Breitengrad und Längengrad ein, um die Standort-Eignung zu überprüfen.</p>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 Windenergie-Plattform. Alle Rechte vorbehalten.
+    </footer>
+</body>
+</html>
