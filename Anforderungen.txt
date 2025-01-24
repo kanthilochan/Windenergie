@@ -1,0 +1,14 @@
+Flask==2.2.5
+pandas==2.0.3
+numpy==1.25.2
+scikit-learn==1.3.0
+geopandas==0.14.0
+shapely==2.0.1
+rasterio==1.3.8
+pyproj==3.6.1
+matplotlib==3.7.2
+psycopg2==2.9.7
+SQLAlchemy==2.0.20
+arcpy==3.1.3
+requests==2.31.0
+gunicorn==21.2.0
