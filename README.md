@@ -84,18 +84,9 @@ Die Hauptwebseite, die Links zu den ArcGIS-Visualisierungen und dem Eignungsprü
 
 ## Live-Webanwendung
 
-Klicken Sie [hier](http://18.199.174.181:5000), um auf die **Visualisierungen von Windkraftanlagen und Umspannwerken in Deutschland mit weiteren Details** und den **Windenergie-Eignungsprüfer** zuzugreifen, wo Sie Breitengrad und Längengrad eingeben können, um die Machbarkeit der Installation von Windkraftanlagen an einem bestimmten Standort zu bewerten.
+Klicken Sie [hier](http://18.199.174.181:5001/), um auf die **Visualisierungen von Windkraftanlagen und Umspannwerken in Deutschland mit weiteren Details** und den **Windenergie-Eignungsprüfer** zuzugreifen, wo Sie Breitengrad und Längengrad eingeben können, um die Machbarkeit der Installation von Windkraftanlagen an einem bestimmten Standort zu bewerten.
 
 **Verwendungszwecke der Webanwendung:**
 - Bewertung der Standorttauglichkeit basierend auf Windgeschwindigkeit, Landbedeckung und Entfernung zu Umspannwerken.
 - Zugriff auf interaktive Visualisierungen von Windkraftanlagen und Umspannwerken in Deutschland.
 - Gewinnung von Erkenntnissen über das Potenzial erneuerbarer Energien für Entscheidungsfindungen.
-
----
-
-## Lokale Ausführung
-
-1. **Repository klonen:**
-   ```bash
-   git clone https://github.com/yourusername/wind-energy-analysis.git
-   cd wind-energy-analysis
