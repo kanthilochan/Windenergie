@@ -90,3 +90,15 @@ Klicken Sie [hier](http://18.199.174.181:5001/), um auf die **Visualisierungen v
 - Bewertung der Standorttauglichkeit basierend auf Windgeschwindigkeit, Landbedeckung und Entfernung zu Umspannwerken.
 - Zugriff auf interaktive Visualisierungen von Windkraftanlagen und Umspannwerken in Deutschland.
 - Gewinnung von Erkenntnissen über das Potenzial erneuerbarer Energien für Entscheidungsfindungen.
+
+  ## Zukünftige Forschung und Verbesserungsmöglichkeiten
+
+- **Berücksichtigung zusätzlicher Faktoren:** Integration weiterer Umweltfaktoren wie Luftqualität, Bodenbeschaffenheit und Netzanschlussmöglichkeiten zur Verbesserung der Standortanalyse.
+- **Erweiterung der Trainingsdaten:** Manuelle Labeling-Strategien und Nutzung zusätzlicher Datensätze zur Verbesserung der Modellgenauigkeit und -robustheit.
+- **Erkundung tieferer Lernmodelle:** Untersuchung von Deep-Learning-Ansätzen wie Convolutional Neural Networks (CNNs) zur präziseren Klassifizierung und Standortbewertung.
+- **Verbesserung der Visualisierungen:** Entwicklung interaktiverer und benutzerfreundlicherer Webkarten mit erweiterten Filter- und Analysefunktionen.
+- **Optimierung der Datenverarbeitungspipeline:** Einführung effizienterer ETL-Prozesse für eine verbesserte Datenverarbeitung und -bereitstellung.
+- **Skalierbarkeit und Leistung:** Evaluierung von Cloud-Lösungen für eine effizientere Skalierung und Verarbeitung großer Datenmengen.
+- **Integration neuer Datenquellen:** Einbindung von Echtzeit-Wetterdaten zur dynamischen Standortbewertung und Entscheidungsunterstützung.
+- **Erweiterung der Webplattform:** Hinzufügen neuer Features zur besseren Nutzererfahrung, z. B. Integration von Benutzerfeedback-Mechanismen oder Exportfunktionen.
+
