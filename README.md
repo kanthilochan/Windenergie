@@ -27,7 +27,7 @@ Dieses Projekt zielt darauf ab, das Windenergiepotenzial in Deutschland durch di
 ### 1. Datenerfassung
 
 - Windkraftanlagendaten von [Open Power System Data](https://data.open-power-system-data.org/renewable_power_plants/)
-- Umspannwerk-Standorte von Overpass Turbo
+- Umspannwerk-Standorte von [Overpass Turbo](https://overpass-turbo.eu/)
 - Landbedeckungsklassifikation von [Mundialis](https://www.mundialis.de/en/germany-2020-land-cover-based-on-sentinel-2-data/)
 - Windgeschwindigkeitsdaten vom [Global Wind Atlas](https://globalwindatlas.info/en/area/Germany)
 
