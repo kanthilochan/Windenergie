@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 # Datenbankverbindung einrichten
-engine = create_engine('postgresql://postgres:kanthi789@localhost:5432/windenergie')
+engine = create_engine('postgresql://postgres:XXXXXXXXX@localhost:5432/windenergie')
 
 def lade_daten():
     """
