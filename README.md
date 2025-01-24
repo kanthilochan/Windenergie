@@ -91,7 +91,9 @@ Klicken Sie [hier](http://18.199.174.181:5001/), um auf die **Visualisierungen v
 - Zugriff auf interaktive Visualisierungen von Windkraftanlagen und Umspannwerken in Deutschland.
 - Gewinnung von Erkenntnissen über das Potenzial erneuerbarer Energien für Entscheidungsfindungen.
 
-  ## Zukünftige Forschung und Verbesserungsmöglichkeiten
+---
+
+## Zukünftige Forschung und Verbesserungsmöglichkeiten
 
 - **Berücksichtigung zusätzlicher Faktoren:** Integration weiterer Umweltfaktoren wie Luftqualität, Bodenbeschaffenheit und Netzanschlussmöglichkeiten zur Verbesserung der Standortanalyse.
 - **Erweiterung der Trainingsdaten:** Manuelle Labeling-Strategien und Nutzung zusätzlicher Datensätze zur Verbesserung der Modellgenauigkeit und -robustheit.
