@@ -48,7 +48,7 @@ api_url = f"https://api.github.com/repos/kanthilochan/Windenergie/contents/Daten
 
 # GitHub-Header für die Authentifizierung
 headers = {
-    "Authorization": "token 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"
+    "Authorization": "token XXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 }
 
 response = requests.get(api_url, headers=headers)
