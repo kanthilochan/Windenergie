@@ -20,7 +20,7 @@ Technologies Used
 
 Programming Languages: Python, HTML, CSS
 
-GIS Tools: ArcGIS Pro, ArcGIS Online
+GIS Tools: ArcGIS Pro, ArcGIS Online, QGIS
 
 Database Management: PostgreSQL/PostGIS
 
@@ -34,7 +34,7 @@ Deployment: AWS EC2 instance with Flask backend
 
 Project Workflow
 
-Data Acquisition:
+1. Data Acquisition:
 
 Wind turbine data from Open Power System Data
 
@@ -44,21 +44,15 @@ Land cover classification from Mundialis
 
 Wind speed data from Global Wind Atlas
 
-Data Preprocessing:
+2. Data Preprocessing:
 
 Importing raw data into PostgreSQL/PostGIS database using Python scripts.
 
 Cleaning and preprocessing data.
 
-Automation with Jenkins:
+Generating additional features such as distance to substations.
 
-Automating data retrieval from GitHub and PostgreSQL/PostGIS.
-
-Processing data and storing results back in the database.
-
-Loading processed data into ArcGIS Pro for visualization.
-
-Visualization in ArcGIS Pro:
+3. Visualization in ArcGIS Pro:
 
 XY Table to Point conversion for wind turbine data.
 
@@ -70,18 +64,58 @@ Symbolization and pop-up configurations.
 
 Exporting final layers to ArcGIS Online.
 
-Machine Learning Model:
+4. Machine Learning Model:
 
 Data preparation with feature engineering.
 
 Model training and evaluation using Random Forest Classifier.
 
-Suitability prediction based on distance to nearest substation, wind speed, and land cover type.
+Suitability prediction based on distance, wind speed, and land cover type.
 
-Web Deployment:
+5. Web Deployment:
 
 Flask-based web interface for user input and model prediction.
 
 Hosted on AWS EC2 instance.
 
-Users can see the visualizations of wind turbines and substations and also can input latitude and longitude to check site suitability for wind turbine installation.
+Users can input latitude and longitude to check site suitability.
+
+How to Run Locally
+
+# Clone the repository
+git clone https://github.com/yourusername/wind-energy-analysis.git
+cd wind-energy-analysis
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run Flask app
+python vorhersagemodell.py
+
+Repository Structure
+
+├── data
+│   ├── Windparks_final
+│   ├── Windgeschwindigkeit_DE.tif
+│   └── landbedeckung.tif
+├── scripts
+│   ├── zentraler_workflow.py
+│   ├── pgadmin_zu_arcgis.py
+│   ├── jenkins_workflow.groovy
+├── web
+│   ├── templates
+│   │   ├── eignung_design.html
+│   │   ├── haupt_design.html
+│   ├── aws.py
+├── README.md
+├── requirements.txt
+└── Vorhersagemodell.py
+
+Contribution
+
+Contributions are welcome! Feel free to fork the repository and submit pull requests.
+
+Contact
+
+For any inquiries, please contact: kanthilochanmuppalla@gmail.com
+
