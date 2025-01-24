@@ -36,7 +36,7 @@ Dieses Projekt zielt darauf ab, das Windenergiepotenzial in Deutschland durch di
 - Importieren der Rohdaten in die PostgreSQL/PostGIS-Datenbank mit Python-Skripten.
 - Bereinigung und Vorverarbeitung der Daten.
 
-### 3. Visualisierung in ArcGIS Pro
+### 3. Verarbeitung, Analyse und Visualisierung räumlicher Daten in Arcgis Pro
 
 - Konvertierung tabellarischer Daten in räumliche Daten mit `XY Table to Point` und `GPX to Features`.
 - Durchführung räumlicher Analysen, z. B. Berechnung der Entfernung zur nächstgelegenen Umspannstation.
