@@ -21,7 +21,7 @@ pipeline {
 
         stage('Daten in ArcGIS laden') {
             steps {
-                sh '"${ARCGIS_PYTHON}" pgadmin_zu_arcgis.py'
+                sh '"${ARCGIS_PYTHON}" Datenabruf_in_Arcgis.py'
             }
         }
     }
