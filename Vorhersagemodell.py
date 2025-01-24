@@ -183,7 +183,7 @@ def index():
         # Übersetzung der Ausgabewerte ins Deutsche
         land_cover_name = translations.get(land_cover_name, land_cover_name)
 
-    return render_template('index.html', 
+    return render_template('eignung_design.html', 
                            suitability_label=suitability_label, 
                            wind_speed=wind_speed, 
                            land_cover_name=land_cover_name, 
