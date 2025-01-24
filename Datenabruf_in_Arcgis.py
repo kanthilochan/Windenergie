@@ -7,7 +7,7 @@ pg_connection = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\Postgr
 output_gdb = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\MyProject_neues.gdb"
 tif_folder = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\TIF_Files"
 gpx_folder = r"C:\Users\User\Documents\ArcGIS\Projects\MyProject_neues\GPX_Files"
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 def lade_daten_aus_pg(tabellen, gdb):
     for tabelle in tabellen:
