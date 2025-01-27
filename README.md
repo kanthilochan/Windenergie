@@ -38,8 +38,10 @@ Dieses Projekt zielt darauf ab, das Windenergiepotenzial in Deutschland durch di
 
 ### 3. Verarbeitung, Analyse und Visualisierung räumlicher Daten in Arcgis Pro
 
-- Konvertierung tabellarischer Daten in räumliche Daten mit `XY Table to Point` und `GPX to Features`.
-- Durchführung räumlicher Analysen, z. B. Berechnung der Entfernung zur nächstgelegenen Umspannstation.
+- Verarbeitung, Analyse und Visualisierung von Geodaten in ArcGIS Pro unter Verwendung von Werkzeugen wie „Projektion definieren“ (Define Projection), „Zuschnitt“ (Clip), 
+  „Vereinigung“ (Union), „Räumliches Verbinden“ (Spatial Join), „Nähe“ (Near), „Mehrfachwerte zu Punkten extrahieren“ (Extract Multi Values to Points), „XY-Tabelle in Punkt 
+  konvertieren“ (XY Table to Point), „GPX zu Features“ (GPX to Features), „Überschneidung“ (Intersect), „Berechnung“ (Calculate), „Symbolisierung“ (Symbology) und „Pop-ups 
+  konfigurieren“ (Configure Pop-ups).
 - Konfiguration von Pop-ups und Symbolisierung für bessere Einblicke.
 - Export der endgültigen Layer nach ArcGIS Online zur öffentlichen Freigabe.
 
