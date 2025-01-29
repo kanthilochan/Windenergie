@@ -6,7 +6,7 @@ engine = create_engine('postgresql://postgres:XXXXXXXXX@localhost:5432/windenerg
 
 def lade_daten():
     """
-    Diese Funktion lädt die Daten aus zwei vorhandenen Tabellen (z.B. 'raw_data_1' und 'raw_data_2') in PostgreSQL.
+    Diese Funktion lädt die Daten aus zwei vorhandenen Tabellen in PostgreSQL.
     """
     # Lade die Daten aus der ersten Tabelle
     windparks_raw = pd.read_sql("SELECT * FROM windparks_roh", engine)
